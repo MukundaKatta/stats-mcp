@@ -43,6 +43,7 @@ function percentile(sorted: number[], p: number): number {
 export function summary(values: number[], pcts: number[] = [25, 50, 75, 90, 95, 99]): SummaryResult {
   if (!Array.isArray(values) || values.length === 0) throw new Error('values must be a non-empty array');
   for (const v of values) if (typeof v !== 'number' || !Number.isFinite(v)) throw new Error('all values must be finite numbers');
+  if (!Array.isArray(pcts)) throw new Error('percentiles must be an array of numbers');
   const sorted = [...values].sort((a, b) => a - b);
   const n = sorted.length;
   const sum = sorted.reduce((a, b) => a + b, 0);
@@ -53,6 +54,7 @@ export function summary(values: number[], pcts: number[] = [25, 50, 75, 90, 95, 
   const stddev = Math.sqrt(variance);
   const percentiles: Record<string, number> = {};
   for (const p of pcts) {
+    if (typeof p !== 'number' || !Number.isFinite(p)) throw new Error('each percentile must be a finite number');
     if (p < 0 || p > 100) throw new Error('percentile must be in [0, 100]');
     percentiles[`p${p}`] = percentile(sorted, p);
   }

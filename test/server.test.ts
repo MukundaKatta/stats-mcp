@@ -56,3 +56,14 @@ test('rejects out-of-range percentile', () => {
   assert.throws(() => summary([1, 2, 3], [-5]));
   assert.throws(() => summary([1, 2, 3], [200]));
 });
+
+test('rejects non-array percentiles', () => {
+  // A malformed MCP client could pass a non-array; must not silently iterate it.
+  assert.throws(() => summary([1, 2, 3], 'foo' as unknown as number[]));
+  assert.throws(() => summary([1, 2, 3], 50 as unknown as number[]));
+});
+
+test('rejects non-number percentile entries', () => {
+  assert.throws(() => summary([1, 2, 3], [50, 'x'] as unknown as number[]));
+  assert.throws(() => summary([1, 2, 3], [NaN]));
+});
